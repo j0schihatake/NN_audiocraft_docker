@@ -15,8 +15,8 @@ RUN apt-get update \
         tzdata \
         nano \
         software-properties-common \
-        python3-venv \
-        python3-tk \
+        python3.9-venv \
+        python3.9-tk \
         pip \
         bash \
         git \
@@ -61,18 +61,26 @@ RUN mkdir /home/audiocraft-user/audiocraft
 
 RUN git clone https://github.com/facebookresearch/audiocraft.git /home/audiocraft-user/audiocraft
 
-ADD ./requirements.txt /home/audiocraft-user/audiocraft/
+#ADD ./requirements.txt /home/audiocraft-user/audiocraft/
 
-RUN cd /home/audiocraft-user/audiocraft/ && \
-    python3 -m pip install -r requirements.txt
+#RUN cd /home/audiocraft-user/audiocraft/ && \
+#    python3 -m pip install -r requirements.txt
 
-#RUN pip install 'torch>=2.0'
+RUN pip install 'torch>=2.0'
+
+RUN pip install -U audiocraft
+
+#RUN pip install -U git+https://git@github.com/facebookresearch/audiocraft#egg=audiocraft
 
 # Preparing for login
 ENV HOME /home/audiocraft-user/audiocraft/
+
+RUN mv ${HOME}/demos/musicgen_app.py ${HOME}/app.py
+
 WORKDIR ${HOME}
 
 CMD python3 app.py --listen 0.0.0.0
+# python -m musicgen_app.py --share
 
 # Docker:
 # docker build -t audiocraft .
